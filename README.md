@@ -5,20 +5,20 @@ Devin Ellison
 The [dataset](https://engineering.purdue.edu/LASCI/research-data/outages), includes major outages across the U.S. from 2000 to 2016. Also included is geographical and economical information about the outages related to the state it occured in.
 
 The columns of the Data we will be using are as follows
-| Column | Description |
-| ----------- | ----------- |
-| 'YEAR' | Year the outage occured |
-| 'MONTH' | Month the outage occured (in numerical value: Jan = 1) |
-| 'U.S._STATE' | U.S. state the outage occured in |
-| 'CLIMATE.REGION' | National Centers for Environmental Information CLIMATE.REGION of the associeated state |
-| 'OUTAGE.START.DATE' | Date the outage started on |
-| 'OUTAGE.START.TIME' | Time the outage started at |
-| 'OUTAGE.RESTORATION.DATE' | Date the outage was restored on |
-| 'OUTAGE.RESTORATION.TIME' | Time the outage was restored at |
-| 'ANOMALY.LEVEL' | Oceanic El Niño/La Niña (ONI) index |
-| 'CLIMATE.CATEGORY' | Cause of the outage |
-| 'CAUSE.CATEGORY.DETAIL' | More detailed cause, such as Hurricane under Severe Weather |
-| 'TOTAL.PRICE' | Average energy cost in the state |
+| Column               | Description                                                                 |
+| -------------------- | --------------------------------------------------------------------------- |
+| YEAR                 | Year the outage occurred                                                     |
+| MONTH                | Month the outage occurred (numerical: Jan = 1)                               |
+| U.S._STATE           | U.S. state the outage occurred                                              |
+| CLIMATE.REGION       | NCEI CLIMATE.REGION of the associated state                                  |
+| OUTAGE.START.DATE    | Date the outage started                                                     |
+| OUTAGE.START.TIME    | Time the outage started                                                     |
+| OUTAGE.RESTORATION.DATE | Date the outage was restored                                              |
+| OUTAGE.RESTORATION.TIME | Time the outage was restored                                              |
+| ANOMALY.LEVEL        | Oceanic El Niño/La Niña (ONI) index                                        |
+| CLIMATE.CATEGORY     | Cause of the outage                                                         |
+| CAUSE.CATEGORY.DETAIL | More detailed cause, e.g., Hurricane under Severe Weather                  |
+| TOTAL.PRICE          | Average energy cost in the state                                           |
 
 Using this dataset I want to analyze the effect of weather as a cause of outages. First I will clean the dataset and remove unnesessary columns, then look at some interesting connections between the data. Secondly I will examine the missingness of one of the columns using a permutation test. Lastly, I will do a hypothesis test on two distributions, and create a Random Forest Classifier to predict the weather cause of an outage, checking it's fairness against a column.
 
@@ -43,7 +43,7 @@ My dataframe ends up looking like this:
 I wanted to look at the number of blackouts over time in months and in years to see if there are any standouts. You can see that 2011 stands out a lot, and seems to have an effect in a few of the years that followed as well before it got back down to normal levels.
 
 <iframe
-  src="assets/2.1"
+  src="assets/2.1.html"
   width="800"
   height="600"
   frameborder="0"
@@ -78,15 +78,19 @@ I also wanted to see now the main cause category detail over the months, based o
 ></iframe>
 
 # Interesting Aggregates
-To check the previous thunderstorm discovery, I wanted to group CLIMATE.REGION and the details of severe weather to see where the thunderstorms are mainly coming from. Looking at thunderstorm, there is a large amount coming mainly from the two Central regions and ther North East, which largely matches with my assumption.
+To check the previous thunderstorm discovery, I wanted to group CLIMATE.REGION and the details of severe weather to see where the thunderstorms are mainly coming from. Looking at thunderstorm, there is a large amount coming mainly from the two Central regions and ther North East, which largely matches with my assumption. This shows just the resulting thunderstorm column.
 
-|   earthquake |   flooding |   fog |   hailstorm |   heatwave |   heavy wind |   hurricanes |   lightning |   public appeal |   snow/ice  |   snow/ice storm |   storm |   thunderstorm |   thunderstorm; islanding |   tornadoes |   uncontrolled loss |   wildfire |   wind |   wind storm |   wind/rain |   winter |   winter storm |
-|-------------:|-----------:|------:|------------:|-----------:|-------------:|-------------:|------------:|----------------:|------------:|-----------------:|--------:|---------------:|--------------------------:|------------:|--------------------:|-----------:|-------:|-------------:|------------:|---------:|---------------:|
-|          nan |        nan |   nan |         nan |          1 |           11 |            4 |         nan |             nan |         nan |              nan |       8 |             48 |                       nan |           2 |                 nan |          2 |    nan |            2 |         nan |        7 |             17 |
-|          nan |          2 |   nan |           2 |        nan |           12 |          nan |         nan |             nan |           2 |                1 |       7 |             33 |                       nan |           2 |                 nan |        nan |    nan |          nan |           3 |      nan |             12 |
-|          nan |          1 |   nan |         nan |          1 |            8 |           20 |         nan |             nan |           6 |              nan |      11 |             42 |                         1 |         nan |                   1 |          2 |    nan |            1 |           6 |        7 |             28 |
-|          nan |        nan |   nan |         nan |        nan |           14 |          nan |         nan |             nan |         nan |              nan |     nan |            nan |                       nan |         nan |                 nan |          1 |      1 |          nan |         nan |      nan |              4 |
-|          nan |          1 |   nan |           1 |        nan |            5 |           22 |           2 |               1 |           1 |              nan |       3 |             23 |                       nan |           2 |                   1 |          1 |      1 |          nan |         nan |        3 |             13 |
+| CLIMATE.REGION       | thunderstorm |
+|---------------------|-------------|
+| Central              | 48.0        |
+| East North Central   | 33.0        |
+| Northeast            | 42.0        |
+| Northwest            | NaN         |
+| South                | 23.0        |
+| Southeast            | 26.0        |
+| Southwest            | 1.0         |
+| West                 | 4.0         |
+| West North Central   | NaN         |
 
 ## Assessment of Missingness
 A few different columns have missing values in the dataset, but all of the price and percent columns are N/A together which I find interesting. I imagine it might have to do with the company related to the outage, so it is likely MNAR. I would really like to see the data of how they got the price values, and what companies they are associated with. However there was a corellation between the missingness of 'TOTAL.PRICE' and anomaly level. After running a permutation test, I got the values:
