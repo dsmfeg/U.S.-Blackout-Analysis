@@ -77,4 +77,83 @@ I also wanted to see now the main cause category detail over the months, based o
   frameborder="0"
 ></iframe>
 
-#Interesting Aggregates
+# Interesting Aggregates
+To check the previous thunderstorm discovery, I wanted to group CLIMATE.REGION and the details of severe weather to see where the thunderstorms are mainly coming from. Looking at thunderstorm, there is a large amount coming mainly from the two Central regions and ther North East, which largely matches with my assumption.
+
+|   earthquake |   flooding |   fog |   hailstorm |   heatwave |   heavy wind |   hurricanes |   lightning |   public appeal |   snow/ice  |   snow/ice storm |   storm |   thunderstorm |   thunderstorm; islanding |   tornadoes |   uncontrolled loss |   wildfire |   wind |   wind storm |   wind/rain |   winter |   winter storm |
+|-------------:|-----------:|------:|------------:|-----------:|-------------:|-------------:|------------:|----------------:|------------:|-----------------:|--------:|---------------:|--------------------------:|------------:|--------------------:|-----------:|-------:|-------------:|------------:|---------:|---------------:|
+|          nan |        nan |   nan |         nan |          1 |           11 |            4 |         nan |             nan |         nan |              nan |       8 |             48 |                       nan |           2 |                 nan |          2 |    nan |            2 |         nan |        7 |             17 |
+|          nan |          2 |   nan |           2 |        nan |           12 |          nan |         nan |             nan |           2 |                1 |       7 |             33 |                       nan |           2 |                 nan |        nan |    nan |          nan |           3 |      nan |             12 |
+|          nan |          1 |   nan |         nan |          1 |            8 |           20 |         nan |             nan |           6 |              nan |      11 |             42 |                         1 |         nan |                   1 |          2 |    nan |            1 |           6 |        7 |             28 |
+|          nan |        nan |   nan |         nan |        nan |           14 |          nan |         nan |             nan |         nan |              nan |     nan |            nan |                       nan |         nan |                 nan |          1 |      1 |          nan |         nan |      nan |              4 |
+|          nan |          1 |   nan |           1 |        nan |            5 |           22 |           2 |               1 |           1 |              nan |       3 |             23 |                       nan |           2 |                   1 |          1 |      1 |          nan |         nan |        3 |             13 |
+
+## Assessment of Missingness
+A few different columns have missing values in the dataset, but all of the price and percent columns are N/A together which I find interesting. I imagine it might have to do with the company related to the outage, so it is likely MNAR. I would really like to see the data of how they got the price values, and what companies they are associated with. However there was a corellation between the missingness of 'TOTAL.PRICE' and anomaly level. After running a permutation test, I got the values:
+
+Observed KS statistic: 0.4683
+Permutation p-value: 0.0000
+
+This shows that the column may actually be MAR, and the price information was less likely reported for outages of standout anomaly. This can be observed on the graph:
+
+<iframe
+  src="assets/3.1.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+## Hypothesis Testing
+The U.S. is a unique country for many reasons, one of these being it's size and diverse enviorenments across many states. In general though, seperating the states to West and East, I imagined there wouldn't be a significant different between the number outages between the two. My first thought was hurricanes, which I believed would skew it a lot to the East, but looking at the previous shows that California alone might carry the Western outages back to a neutral standpoint due to how many we get. 
+
+Null Hypothesis: Severe weather outages are equally common in the East and the West.
+Alternate Hypothesis: Severe weather outages are more common in one region than the other (East vs. West).
+
+I seperated the states to East and West based on their 'CLIMATE.REGION' as follows:
+- "East North Central": "East",
+- "Central": "East",
+- "South": "East",
+- "Northeast": "East",
+- "Southeast": "East",
+- "Northwest": "West",
+- "Southwest": "West",
+- "West North Central": "West",
+- "West": "West"
+
+I then ran a permutation test using the difference in proportions of outages of east and west, which gave me a p-value of 0.000. This makes sense as the observed value was about 0.35, showing that the East does get a lot more severe weather outages than the west, despite California having a lot itself.
+
+## Prediction Problem
+Based somehwat on the hypothesis test, but mainly on the pivot table in the data analysis, there is likely a corellation bewteen the type of weather and the location of the blackout. I imagine if you told me that it was a hurricane, along with some other features, I could tell you it was in the south and what states it was. Similarly if it was a Tornado it would likely be the Midwest. Based on this, I want to try and predict the state the blackout happened in using other columns. To do this I will use a multiclass Random Forest Classifier. 
+
+## Baseline Model
+I made the basic Random Forest Classifier using the columns; 
+- 'CUSTOMERS.AFFECTED' (Quantitative)
+- 'ANOMALY.LEVEL' (Quantitative)
+- 'OUTAGE.DURATION' (Quantitative)
+- 'YEAR' (Quantitative)
+- 'MONTH' (Quantitative)
+to predict the 'US._STATE'. Despite the idea, the accuracy was pretty terrible at a 0.1699. Obviously I do not think the model is good.
+
+## Final Model
+I realised I could try adding the start time as well, as a lot of the blackouts I've experienced were more towards nighttime. I figured events like severe weather or other causes may break that and occur at more unique times, which could help the model at understanding the occurence of the outage better. Also since if it occured at 6 pm Eastern Time when a lot of lights are starting to turn on and increase the power being drawn, it's still going to be 3 pm on the West coast and likely not where the outage occured. 
+
+To do this i just had to transform the pd.DateTime objects to get the hour it happened at. I figured the difference in minute or date wouldn't mean as much, since I already had the 'YEAR' and 'MONTH' column, and since minutes probably doesn't affect much.
+
+I also realized that after thinking so much about how the weather could be affecting the outages, It doesn't understand what's actually causing it since I didn't include the cause category as a column. Due to this I decided to OneHotEncode the 'CAUSE.CATEGORY.DETAIL' column, so it knows whether it was a hurricane, intentional attack, or other.
+
+I used GridSearchCV to optimize the max_depth of the classifier, which it determined to only be a max depth of 5, which I found interesting, since I would've thought something more like 10 or 20 would be better without it being too overfit.
+
+While it didn't do too much, it did increase the accuracy to a 0.26666666666666666, just about 0.1 better than before.
+
+
+## Fairness Analysis
+I decided to do my groups for the fairness analysis as day and night. This is classified as day being 9am to 7pm inclusive, and night as everything else. I'm using the weighted F1-score of the classifier’s predictions (predicted) compared to the true labels (observed) within each group to check the fairness. Using the absolute difference in weighted F1-scores between day and night as my test statistic at a significance level of a=0.05. 
+
+Null Hypothesis: Any observed difference in weighted F1-score between the two groups is due to random chance.
+Alternate Hypothesis: There is a real difference in weighted F1-scores between the two groups.
+
+After doing the permutation test, I got:
+Observed F1 difference (day vs night): 0.0199
+Permutation test p-value: 0.0000
+
+With this, we can see that there is strong evidence that the model’s performance differs between day and night outages. The observed difference in weighted F1-score is unlikely to have occurred by chance alone, suggesting a potential fairness or performance disparity across these groups.
