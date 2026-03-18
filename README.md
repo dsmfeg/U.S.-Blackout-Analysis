@@ -1,7 +1,7 @@
 ### U.S.-Blackout-Analysis
 Devin Ellison
 
-##Introduction
+##Introduction 
 The [dataset]([https://www.example.com](https://engineering.purdue.edu/LASCI/research-data/outages)), includes major outages across the U.S. from 2000 to 2016. Also included is geographical and economical information about the outages related to the state it occured in.
 
 The columns of the Data we will be using are as follows
