@@ -5,6 +5,7 @@ Devin Ellison
 The [dataset](https://engineering.purdue.edu/LASCI/research-data/outages), includes major outages across the U.S. from 2000 to 2016. Also included is geographical and economical information about the outages related to the state it occured in.
 
 The columns of the Data we will be using are as follows
+
 | Column               | Description                                                                 |
 | -------------------- | --------------------------------------------------------------------------- |
 | YEAR                 | Year the outage occurred                                                     |
@@ -31,6 +32,7 @@ Using this dataset I want to analyze the effect of weather as a cause of outages
 2. Second, I combined 'OUTAGE.START.DATE' and 'OUTAGE.START.Time' into a pd.DateTime object, and similarly with 'OUTAGE.RESTORATION.DATE' and 'OUTAGE.RESTORATION.Time'
 
 My dataframe ends up looking like this:
+
 |   YEAR |   MONTH | U.S._STATE   | CLIMATE.REGION     |   ANOMALY.LEVEL | CLIMATE.CATEGORY   | CAUSE.CATEGORY     | CAUSE.CATEGORY.DETAIL   |   OUTAGE.DURATION |   CUSTOMERS.AFFECTED |   TOTAL.PRICE | START               | END                 |
 |-------:|--------:|:-------------|:-------------------|----------------:|:-------------------|:-------------------|:------------------------|------------------:|---------------------:|--------------:|:--------------------|:--------------------|
 |   2011 |       7 | Minnesota    | East North Central |            -0.3 | normal             | severe weather     | nan                     |              3060 |                70000 |          9.28 | 2011-07-01 17:00:00 | 2011-07-03 20:00:00 |
