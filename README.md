@@ -43,7 +43,7 @@ My dataframe ends up looking like this:
 I wanted to look at the number of blackouts over time in months and in years to see if there are any standouts. You can see that 2011 stands out a lot, and seems to have an effect in a few of the years that followed as well before it got back down to normal levels.
 
 <iframe
-  src="assets/2.1.html"
+  src="assets/2.1"
   width="800"
   height="600"
   frameborder="0"
