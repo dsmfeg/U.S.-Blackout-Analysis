@@ -6,6 +6,7 @@ The [dataset](https://engineering.purdue.edu/LASCI/research-data/outages), inclu
 
 The columns of the Data we will be using are as follows
 
+
 | Column               | Description                                                                 |
 | -------------------- | --------------------------------------------------------------------------- |
 | YEAR                 | Year the outage occurred                                                     |
@@ -32,6 +33,7 @@ Using this dataset I want to analyze the effect of weather as a cause of outages
 2. Second, I combined 'OUTAGE.START.DATE' and 'OUTAGE.START.Time' into a pd.DateTime object, and similarly with 'OUTAGE.RESTORATION.DATE' and 'OUTAGE.RESTORATION.Time'
 
 My dataframe ends up looking like this:
+
 
 |   YEAR |   MONTH | U.S._STATE   | CLIMATE.REGION     |   ANOMALY.LEVEL | CLIMATE.CATEGORY   | CAUSE.CATEGORY     | CAUSE.CATEGORY.DETAIL   |   OUTAGE.DURATION |   CUSTOMERS.AFFECTED |   TOTAL.PRICE | START               | END                 |
 |-------:|--------:|:-------------|:-------------------|----------------:|:-------------------|:-------------------|:------------------------|------------------:|---------------------:|--------------:|:--------------------|:--------------------|
