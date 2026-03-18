@@ -40,5 +40,42 @@ My dataframe ends up looking like this:
 |   2015 |       7 | Minnesota    | East North Central |             1.2 | warm               | severe weather     | nan                     |              1740 |               250000 |         10.43 | 2015-07-18 02:00:00 | 2015-07-19 07:00:00 |
 
 #Univariate Analysis
+I wanted to look at the number of blackouts over time in months and in years to see if there are any standouts. You can see that 2011 stands out a lot, and seems to have an effect in a few of the years that followed as well before it got back down to normal levels.
 
+<iframe
+  src="assets/2.1.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
 
+I also wanted to do the same but for months instead. There is some pattern of the hotter and colder months in Summer and Winter having more blackouts, likely due to severe weather. But the difference isn't too great.
+
+<iframe
+  src="assets/2.2.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+# Bivariate Analysis
+I wanted to see both months and severe weather together to see if my assumption based on the previous month graph is correct. Most of the causes are pretty linear, but there is definitely a pickup in severe weather at least over the summer months.
+
+<iframe
+  src="assets/2.3.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+I also wanted to see now the main cause category detail over the months, based on this, because I have a feeling the reason it spikes in June is because
+#hurricane season is happening. I'm pretty surprised to see that it's actually thunderstorm with 63 outages. In hindsight it does make sense, and I wonder if this large amount from thunderstorm is coming from the midwest Tornade belt region
+
+<iframe
+  src="assets/2.4.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+#Interesting Aggregates
